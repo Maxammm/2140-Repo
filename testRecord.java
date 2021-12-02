@@ -109,36 +109,60 @@ class testRecord{
 
     // Low Acceptance Method - exception to ensure only integers are passed
     public void setLowQuantAcceptance(int lowQuantAcceptance) {
-        this.lowQuantAcceptance = lowQuantAcceptance;
+        if (getItemQuant() != -1){
+            this.lowQuantAcceptance = lowQuantAcceptance;
+        } else {
+            System.out.println(getName() + " does not currently have any quantity set!");
+        }
     }
 
     // Expiration Date Methods - each (expiration date) should have an exception that ensures only integers are entered
     public void setExpDay(int expDay) {
         // a record does not necessarily need the expDate set because it might not be a perishable item
-        this.expDay = expDay;
+        if (expDay > 31){
+            System.out.println("Cannot enter a number larger than 31 for the expiry day!");
+        } else if (expDay < 1) {
+            System.out.println("Cannot enter a number smaller than 1 for the expiry day!");
+        }else {
+            this.expDay = expDay;
+        }
+        
     }
 
     public void setExpMonth(int expMonth) {
         // a record does not necessarily need the expDate set because it might not be a perishable item
-        this.expMonth = expMonth;
+        if (expMonth > 12){
+            System.out.println("Cannot enter a number larger than 12 for the expiry month!");
+        } else if (expMonth < 1) {
+            System.out.println("Cannot enter a number smaller than 1 for the expiry month!");
+        } else {
+            this.expMonth = expMonth;
+        }
     }
 
     public void setExpYear(int expYear) {
         // a record does not necessarily need the expDate set because it might not be a perishable item
-        this.expYear = expYear;
+        /* Use the time-date function to change the 2021 to current year */
+        if (expYear > 2021){
+            System.out.println("Cannot enter a number larger than the current year!");
+        } else if (expYear < 1){
+            System.out.println("Cannot enter a number smaller than 1 for the expiry year!");
+        } else {
+            this.expYear = expYear;
+        }
     }
 
     // Expiration Date Limit Methods - each (expiration date limit) should have an exception that ensures only integers are entered
     public void setWithinExpDay(int withinExpDay) {
         // a record does not necessarily need the expDate set because it might not be a perishable item
-        if (getExpDay() == -1){
+        if (getExpDay() == -1) {
             System.out.println(getName() + " does not currently have an expiry day set!");
-        }
-
-        if ( (getExpDay() - withinExpDay) < 7){
+        } if ( (getExpDay() - withinExpDay) < 7) {
             System.out.println("Expiry Day Limits must be a week or more from the actual expiry date");
         }
-        this.withinExpDay = withinExpDay;
+        else{
+            this.withinExpDay = withinExpDay;
+        }
     }
 
     public void setWithinExpMonth(int withinExpMonth) {
@@ -146,9 +170,19 @@ class testRecord{
 
         // add code sets the month only if 
         // 1) the expiry day limit is set
+        if (getWithinExpDay() == -1) {
+            System.out.println("Cannot set expiry month limit for " + getName() + " because expiry day limit is not set!");
+        }
         // 2) the expiry month is set (different from the expiry month limit which is this method)
+        else if (getExpMonth() == -1) {
+            System.out.println("Cannot set expiry month limit for "  + getName() + " because expiry month is not set!");
+        }
         // 3) the withinExpMonth parameter is less than or equal to the expiry month
-        this.withinExpMonth = withinExpMonth;
+        else if ( withinExpMonth > getExpMonth()) {
+            System.out.println("Cannot set expiry month limit for "  + getName() + " the current limit chosen is a larger value than the expiry month!");
+        } else {
+            this.withinExpMonth = withinExpMonth;
+        }
     }
 
     public void setWithinExpYear(int withinExpYear) {
@@ -156,16 +190,29 @@ class testRecord{
 
         // add code sets the year only if 
         // 1) the expiry day limit is set
+        if (getWithinExpDay() == -1){
+            System.out.println("Cannot set expiry month limit for " + getName() + " because expiry day limit is not set!");
+        }
         // 2) the expiry month limit is set
+        else if (getExpMonth() == -1) {
+            System.out.println("Cannot set expiry month limit for "  + getName() + " because expiry month is not set!");
+        }
         // 3) the expiry year is set
+        else if (getExpYear() == -1){
+            System.out.println(getName() + " does not have it's expiry year set yet!");
+        } 
         // 4) the withinExpMonth parameter is less than or equal to the expiry year
-        this.withinExpYear = withinExpYear;
+        else if (withinExpYear > getExpYear()){
+            System.out.println("Cannot set expiry year limit for " + getName() + " because the current (year) limit is a larger value than the expiry year!");
+        } else {
+            this.withinExpYear = withinExpYear;
+        }
     }
 
     // Discount Method
     public void setDiscount(double discount) {
-        // needs to be updated to accomodate more exceptions
-        if ( (getExpDay() - getWithinExpDay()) < 7){ 
+        // discount does not apply if the expiry date limit has not been reached (is more than 1 week away from expiry)
+        if ( ( ( getExpDay() - getWithinExpDay() ) < 7) && (getExpMonth() == getWithinExpMonth()) && (getExpYear() == getWithinExpYear()) ) { 
             this.discount = discount;
             double newCost = getCost() * (this.discount/100);
             setCost(newCost);
