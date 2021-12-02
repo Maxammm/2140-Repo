@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.time.LocalDate;
 
 class testRecord{
 
@@ -17,6 +18,7 @@ class testRecord{
     private int withinExpDay;
     private int withinExpMonth;
     private int withinExpYear;
+    private int currentYear;
     // add attributes that will reference the Warning classes
 
     //constructor
@@ -35,6 +37,7 @@ class testRecord{
         withinExpMonth = -1;
         withinExpYear = -1;
         lowQuantAcceptance = -1;
+        currentYear = LocalDate.now().getYear();
     }
 
     // Getters
@@ -57,6 +60,10 @@ class testRecord{
     // Low Quantity Method
     public int getLowQuantAcceptance() {
         return lowQuantAcceptance;
+    }
+
+    public int getCurrentYear() {
+        return currentYear;
     }
 
     // Expiration Date Methods
@@ -143,7 +150,7 @@ class testRecord{
     public void setExpYear(int expYear) {
         // a record does not necessarily need the expDate set because it might not be a perishable item
         /* Use the time-date function to change the 2021 to current year */
-        if (expYear > 2021){
+        if (expYear > getCurrentYear()){
             System.out.println("Cannot enter a number larger than the current year!");
         } else if (expYear < 1){
             System.out.println("Cannot enter a number smaller than 1 for the expiry year!");
